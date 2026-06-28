@@ -1,0 +1,6 @@
+{
+  "name": "World Cup Playoff Predictor",
+  "description": "An interactive World Cup playoff match prediction game featuring real-time scores, global leaderboards, notification subscriptions, and dark mode theme toggling.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

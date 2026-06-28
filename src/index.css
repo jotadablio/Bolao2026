@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom compact scrollbar for high-density components */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.35);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #040d08; /* Deep Football Pitch Dark Green */
+}
+
+/* Authentic stadium layout elements */
+.stadium-pitch-glow {
+  background: radial-gradient(circle at top, rgba(16, 185, 129, 0.15) 0%, rgba(4, 13, 8, 0) 70%);
+}
+
+.coca-cola-badge {
+  background: linear-gradient(135deg, #e10600 0%, #a30000 100%);
+  color: white;
+}

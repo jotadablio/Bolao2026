@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "App user profile with total points accumulated",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "totalPoints": { "type": "integer" },
+        "predictionsCount": { "type": "integer" },
+        "exactCount": { "type": "integer" },
+        "outcomeCount": { "type": "integer" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Match": {
+      "title": "Match",
+      "description": "A playoff match in the tournament",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "homeTeam": { "type": "string" },
+        "awayTeam": { "type": "string" },
+        "homeFlag": { "type": "string" },
+        "awayFlag": { "type": "string" },
+        "kickoffTime": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["scheduled", "live", "finished"] },
+        "homeScore": { "type": "integer" },
+        "awayScore": { "type": "integer" },
+        "stage": { "type": "string" }
+      },
+      "required": ["id", "homeTeam", "awayTeam", "kickoffTime", "status", "stage"]
+    },
+    "Prediction": {
+      "title": "Prediction",
+      "description": "A user's prediction for a match",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "matchId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "userName": { "type": "string" },
+        "predictedHomeScore": { "type": "integer" },
+        "predictedAwayScore": { "type": "integer" },
+        "pointsEarned": { "type": "integer" },
+        "status": { "type": "string", "enum": ["pending", "processed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "matchId", "predictedHomeScore", "predictedAwayScore", "status"]
+    },
+    "Group": {
+      "title": "Group",
+      "description": "A custom prediction group (Bolão)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "adminId": { "type": "string" },
+        "adminName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "adminId", "adminName"]
+    },
+    "GroupMember": {
+      "title": "GroupMember",
+      "description": "A member of a custom prediction group",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "joinedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "matches/{matchId}": {
+      "schema": "Match",
+      "description": "World Cup matches"
+    },
+    "predictions/{predictionId}": {
+      "schema": "Prediction",
+      "description": "Predictions made by users"
+    },
+    "groups/{groupId}": {
+      "schema": "Group",
+      "description": "Custom groups / pools (Bolões)"
+    },
+    "groups/{groupId}/members/{memberId}": {
+      "schema": "GroupMember",
+      "description": "Members of a specific custom group"
+    }
+  }
+}
