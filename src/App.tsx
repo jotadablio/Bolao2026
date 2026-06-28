@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { auth, logOut } from "./firebase";
+import { auth, logOut, isFirebaseConfigured } from "./firebase";
 import { 
   subscribeMatches, 
   subscribePredictions, 
@@ -50,6 +50,11 @@ export default function App() {
 
   // Auth listener
   useEffect(() => {
+    if (!isFirebaseConfigured) {
+      setAuthLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       setAuthLoading(false);
@@ -211,6 +216,53 @@ export default function App() {
         <span className="text-xs font-black text-emerald-400 font-mono tracking-widest animate-pulse">
           CARREGANDO COPA DO MUNDO...
         </span>
+      </div>
+    );
+  }
+
+  // If Firebase is not configured (e.g. on Vercel without environment variables)
+  if (!isFirebaseConfigured) {
+    return (
+      <div className="min-h-screen bg-[#040d08] text-slate-100 flex flex-col items-center justify-center p-6 font-sans relative">
+        <div className="absolute inset-0 stadium-pitch-glow opacity-30 pointer-events-none" />
+        <div className="max-w-md w-full bg-black/50 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-6 md:p-8 text-center shadow-2xl relative z-10 flex flex-col gap-6">
+          <div className="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center border border-red-500/30 shadow-lg mx-auto">
+            <ShieldAlert className="w-8 h-8" />
+          </div>
+          <div>
+            <h1 className="text-lg font-black tracking-wider uppercase text-white">Configuração Necessária</h1>
+            <p className="text-xs text-red-400 font-bold uppercase tracking-wider font-mono mt-1">
+              Credenciais do Firebase Ausentes
+            </p>
+          </div>
+          <p className="text-xs text-slate-300 leading-relaxed text-left bg-black/40 p-4 border border-slate-800 rounded-xl">
+            Para que o seu deploy na Vercel funcione corretamente, você precisa configurar as **Variáveis de Ambiente** no painel da Vercel correspondentes ao Firebase.
+          </p>
+          <div className="text-left flex flex-col gap-3">
+            <p className="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest font-mono">
+              Passo a Passo para Ajustar:
+            </p>
+            <ol className="text-[11px] text-slate-400 list-decimal pl-4 flex flex-col gap-2">
+              <li>Acesse o painel da <strong className="text-white">Vercel</strong> e entre no seu projeto.</li>
+              <li>Vá em <strong className="text-white">Settings</strong> &gt; <strong className="text-white">Environment Variables</strong>.</li>
+              <li>Adicione as variáveis abaixo (com os valores do seu Firebase):
+                <ul className="list-disc pl-4 mt-1.5 text-[10px] font-mono text-emerald-400/80 flex flex-col gap-1 bg-black/30 p-2 rounded border border-white/5">
+                  <li>VITE_FIREBASE_API_KEY</li>
+                  <li>VITE_FIREBASE_AUTH_DOMAIN</li>
+                  <li>VITE_FIREBASE_PROJECT_ID</li>
+                  <li>VITE_FIREBASE_STORAGE_BUCKET</li>
+                  <li>VITE_FIREBASE_MESSAGING_SENDER_ID</li>
+                  <li>VITE_FIREBASE_APP_ID</li>
+                  <li>VITE_FIREBASE_FIRESTORE_DATABASE_ID</li>
+                </ul>
+              </li>
+              <li>Faça um novo deploy (Redeploy) na Vercel para aplicar!</li>
+            </ol>
+          </div>
+          <div className="text-[9px] font-mono text-slate-500 border-t border-slate-800/60 pt-4">
+            Isso garante que seu banco de dados e autenticação funcionem perfeitamente em seu próprio domínio da Vercel de forma 100% segura.
+          </div>
+        </div>
       </div>
     );
   }

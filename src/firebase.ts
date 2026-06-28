@@ -25,23 +25,39 @@ const firebaseConfig = {
   firestoreDatabaseId: import.meta.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID
 };
 
-const app = initializeApp({
-  apiKey: firebaseConfig.apiKey,
-  authDomain: firebaseConfig.authDomain,
-  projectId: firebaseConfig.projectId,
-  storageBucket: firebaseConfig.storageBucket,
-  messagingSenderId: firebaseConfig.messagingSenderId,
-  appId: firebaseConfig.appId
-});
+export const isFirebaseConfigured = !!(firebaseConfig.apiKey && firebaseConfig.projectId);
+
+let app: any;
+let dbInstance: any;
+let authInstance: any;
+let googleProviderInstance: any;
+
+if (isFirebaseConfigured) {
+  try {
+    app = initializeApp({
+      apiKey: firebaseConfig.apiKey,
+      authDomain: firebaseConfig.authDomain,
+      projectId: firebaseConfig.projectId,
+      storageBucket: firebaseConfig.storageBucket,
+      messagingSenderId: firebaseConfig.messagingSenderId,
+      appId: firebaseConfig.appId
+    });
+    dbInstance = firebaseConfig.firestoreDatabaseId 
+      ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
+      : getFirestore(app);
+    authInstance = getAuth(app);
+    googleProviderInstance = new GoogleAuthProvider();
+  } catch (err) {
+    console.error("Erro ao inicializar Firebase:", err);
+  }
+}
 
 // Initialize Firestore with custom database ID from config if present
-export const db = firebaseConfig.firestoreDatabaseId 
-  ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
-  : getFirestore(app);
+export const db = dbInstance;
 
 // Initialize Auth
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+export const auth = authInstance;
+export const googleProvider = googleProviderInstance;
 
 // Google Sign-In
 export async function signInWithGoogle() {
@@ -82,6 +98,7 @@ export async function logOut() {
 
 // Validate connection to Firestore as required by firebase-integration skill
 async function testConnection() {
+  if (!isFirebaseConfigured) return;
   try {
     await getDocFromServer(doc(db, "test", "connection"));
   } catch (error) {

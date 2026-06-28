@@ -78,8 +78,8 @@ export default function PredictionCard({
       setHomeInput(userPrediction.predictedHomeScore.toString());
       setAwayInput(userPrediction.predictedAwayScore.toString());
     } else {
-      setHomeInput("");
-      setAwayInput("");
+      setHomeInput("0");
+      setAwayInput("0");
     }
   }, [userPrediction]);
 
@@ -90,8 +90,8 @@ export default function PredictionCard({
       return;
     }
 
-    const homeScoreVal = parseInt(homeInput);
-    const awayScoreVal = parseInt(awayInput);
+    const homeScoreVal = homeInput === "" ? 0 : parseInt(homeInput);
+    const awayScoreVal = awayInput === "" ? 0 : parseInt(awayInput);
 
     if (isNaN(homeScoreVal) || isNaN(awayScoreVal) || homeScoreVal < 0 || awayScoreVal < 0) {
       setError("Insira valores de gols válidos (maiores ou iguais a 0).");
@@ -379,7 +379,7 @@ export default function PredictionCard({
             {/* Submit btn */}
             <button
               type="submit"
-              disabled={isSubmitting || !homeInput || !awayInput}
+              disabled={isSubmitting}
               id={`submit_pick_btn_${match.id}`}
               className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-black text-xs uppercase tracking-widest rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
             >
