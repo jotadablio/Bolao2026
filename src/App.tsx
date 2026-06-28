@@ -126,6 +126,14 @@ export default function App() {
   const handleCreateGroup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newGroupNameInput.trim() || !user) return;
+    
+    // Limit to 3 created groups per user account
+    const createdGroupsCount = joinedGroups.filter((g) => g.adminId === user.uid).length;
+    if (createdGroupsCount >= 3) {
+      alert("Você atingiu o limite máximo de criação de bolões (máximo de 3 bolões por conta).");
+      return;
+    }
+
     setIsGroupActionLoading(true);
     try {
       const code = await createGroup(
@@ -231,6 +239,7 @@ export default function App() {
 
   // Selected Group details & filtering
   const selectedGroup = joinedGroups.find((g) => g.id === selectedGroupId);
+  const createdGroupsCount = joinedGroups.filter((g) => g.adminId === user.uid).length;
   const groupUsers = leaderboard.filter((u) => selectedGroupMembers.includes(u.uid));
 
   return (
@@ -531,24 +540,36 @@ export default function App() {
 
                       {/* Create Form */}
                       <form onSubmit={handleCreateGroup} className="bg-black/40 backdrop-blur-sm border border-emerald-500/10 rounded-xl p-5 flex flex-col gap-4">
-                        <h3 className="text-xs font-black text-white uppercase tracking-wider">Criar Novo Bolão</h3>
-                        <div className="flex flex-col gap-2.5">
-                          <input
-                            type="text"
-                            placeholder="Nome do seu Bolão"
-                            maxLength={40}
-                            value={newGroupNameInput}
-                            onChange={(e) => setNewGroupNameInput(e.target.value)}
-                            className="w-full text-xs py-2.5 px-3 bg-black border border-emerald-500/15 rounded text-white font-bold focus:outline-none focus:border-amber-500"
-                          />
-                          <button
-                            type="submit"
-                            disabled={isGroupActionLoading || !newGroupNameInput.trim()}
-                            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-widest rounded transition-colors disabled:opacity-40 cursor-pointer"
-                          >
-                            {isGroupActionLoading ? "Criando..." : "Criar Bolão Oficial"}
-                          </button>
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xs font-black text-white uppercase tracking-wider">Criar Novo Bolão</h3>
+                          <span className={`text-[10px] font-mono font-bold ${createdGroupsCount >= 3 ? "text-red-400" : "text-emerald-400"}`}>
+                            {createdGroupsCount}/3 Criados
+                          </span>
                         </div>
+                        
+                        {createdGroupsCount >= 3 ? (
+                          <div className="p-3 bg-red-500/10 rounded-lg border border-red-500/20 text-[10px] text-red-400 font-bold uppercase font-mono tracking-wider leading-relaxed text-center">
+                            Você atingiu o limite máximo de 3 bolões criados por conta.
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-2.5">
+                            <input
+                              type="text"
+                              placeholder="Nome do seu Bolão"
+                              maxLength={40}
+                              value={newGroupNameInput}
+                              onChange={(e) => setNewGroupNameInput(e.target.value)}
+                              className="w-full text-xs py-2.5 px-3 bg-black border border-emerald-500/15 rounded text-white font-bold focus:outline-none focus:border-amber-500"
+                            />
+                            <button
+                              type="submit"
+                              disabled={isGroupActionLoading || !newGroupNameInput.trim()}
+                              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-widest rounded transition-colors disabled:opacity-40 cursor-pointer"
+                            >
+                              {isGroupActionLoading ? "Criando..." : "Criar Bolão Oficial"}
+                            </button>
+                          </div>
+                        )}
                       </form>
                     </div>
 
