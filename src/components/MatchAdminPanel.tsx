@@ -32,17 +32,25 @@ export default function MatchAdminPanel({ matches, predictions }: MatchAdminPane
     if (!selectedMatch) return;
     setIsProcessing(true);
     try {
+      const updatedStatus = statusInput;
       const updated: Match = {
         ...selectedMatch,
-        status: statusInput,
-        homeScore: statusInput !== "scheduled" ? parseInt(homeScoreInput) || 0 : undefined,
-        awayScore: statusInput !== "scheduled" ? parseInt(awayScoreInput) || 0 : undefined
+        status: updatedStatus,
+        homeScore: updatedStatus !== "scheduled" ? parseInt(homeScoreInput) || 0 : undefined,
+        awayScore: updatedStatus !== "scheduled" ? parseInt(awayScoreInput) || 0 : undefined
       };
+      
+      // Update the match in Firestore
       await updateMatch(updated);
-      alert(`Partida atualizada com sucesso: ${updated.homeTeam} vs ${updated.awayTeam} (${updated.status === "finished" ? "Finalizado" : updated.status === "live" ? "Ao vivo" : "Agendado"})`);
+      
+      // Automatically recalculate points in real-time
+      const updatedMatchesList = matches.map(m => m.id === updated.id ? updated : m);
+      await recalculateScores(updatedMatchesList, predictions);
+
+      alert(`Partida atualizada com sucesso: ${updated.homeTeam} vs ${updated.awayTeam} (${updatedStatus === "finished" ? "Finalizado" : updatedStatus === "live" ? "Ao vivo" : "Agendado"}). O ranking e as pontuações foram recalculados automaticamente!`);
     } catch (err) {
       console.error(err);
-      alert("Falha ao atualizar partida.");
+      alert("Falha ao atualizar partida ou recalcular ranking.");
     } finally {
       setIsProcessing(false);
     }
@@ -171,40 +179,55 @@ export default function MatchAdminPanel({ matches, predictions }: MatchAdminPane
                   </div>
 
                   {/* Goal inputs */}
-                  {statusInput !== "scheduled" && (
-                    <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
                       <label className="text-[9px] font-extrabold text-slate-400 uppercase font-mono tracking-wider">
                         Placar do Jogo
                       </label>
-                      <div className="flex items-center gap-3">
-                        <div className="flex flex-col gap-1 grow">
-                          <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider truncate">
-                            {selectedMatch.homeTeam}
-                          </span>
-                          <input
-                            type="number"
-                            min="0"
-                            value={homeScoreInput}
-                            onChange={(e) => setHomeScoreInput(e.target.value)}
-                            className="w-full text-xs text-center font-bold font-mono py-1.5 border border-emerald-500/15 bg-black text-white rounded focus:border-amber-500 focus:outline-none"
-                          />
-                        </div>
-                        <span className="text-emerald-500 font-black mt-4">-</span>
-                        <div className="flex flex-col gap-1 grow">
-                          <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider truncate">
-                            {selectedMatch.awayTeam}
-                          </span>
-                          <input
-                            type="number"
-                            min="0"
-                            value={awayScoreInput}
-                            onChange={(e) => setAwayScoreInput(e.target.value)}
-                            className="w-full text-xs text-center font-bold font-mono py-1.5 border border-emerald-500/15 bg-black text-white rounded focus:border-amber-500 focus:outline-none"
-                          />
-                        </div>
+                      {statusInput === "scheduled" && (
+                        <span className="text-[9px] text-amber-500 font-bold uppercase font-mono">
+                          (Modificar o placar muda o status para "Encerrado")
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-col gap-1 grow">
+                        <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider truncate">
+                          {selectedMatch.homeTeam}
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={homeScoreInput}
+                          onChange={(e) => {
+                            setHomeScoreInput(e.target.value);
+                            if (statusInput === "scheduled") {
+                              setStatusInput("finished");
+                            }
+                          }}
+                          className="w-full text-xs text-center font-bold font-mono py-1.5 border border-emerald-500/15 bg-black text-white rounded focus:border-amber-500 focus:outline-none"
+                        />
+                      </div>
+                      <span className="text-emerald-500 font-black mt-4">-</span>
+                      <div className="flex flex-col gap-1 grow">
+                        <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider truncate">
+                          {selectedMatch.awayTeam}
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={awayScoreInput}
+                          onChange={(e) => {
+                            setAwayScoreInput(e.target.value);
+                            if (statusInput === "scheduled") {
+                              setStatusInput("finished");
+                            }
+                          }}
+                          className="w-full text-xs text-center font-bold font-mono py-1.5 border border-emerald-500/15 bg-black text-white rounded focus:border-amber-500 focus:outline-none"
+                        />
                       </div>
                     </div>
-                  )}
+                  </div>
 
                   <button
                     onClick={handleUpdateMatch}
