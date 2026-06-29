@@ -8,7 +8,9 @@ export const INITIAL_MATCHES: Match[] = [
     homeFlag: "🇿🇦",
     awayFlag: "🇨🇦",
     kickoffTime: new Date(2026, 5, 28, 16, 0).toISOString(), // 28 de Junho, 16:00
-    status: "scheduled",
+    status: "finished",
+    homeScore: 0,
+    awayScore: 1,
     stage: "16avos de Final"
   },
   {

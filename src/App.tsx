@@ -47,6 +47,7 @@ export default function App() {
   // UI state
   const [activeTab, setActiveTab] = useState<"matches" | "leaderboard" | "groups">("matches");
   const [filterStage, setFilterStage] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<"active" | "finished" | "all">("active");
   const [darkMode, setDarkMode] = useState<boolean>(true);
   
   // API Sync state
@@ -315,9 +316,17 @@ export default function App() {
   // Extract all available stages for stage filter dropdown
   const uniqueStages = Array.from(new Set(matches.map((m) => m.stage)));
 
-  const filteredMatches = matches.filter(
-    (m) => filterStage === "all" || m.stage === filterStage
-  );
+  const filteredMatches = matches.filter((m) => {
+    const stageMatch = filterStage === "all" || m.stage === filterStage;
+    if (!stageMatch) return false;
+    
+    if (filterStatus === "active") {
+      return m.status === "scheduled" || m.status === "live";
+    } else if (filterStatus === "finished") {
+      return m.status === "finished";
+    }
+    return true; // "all"
+  });
 
   // Find current user's leaderboard profile for stat stats
   const myProfile = leaderboard.find((p) => p.uid === user.uid);
@@ -489,15 +498,49 @@ export default function App() {
           {/* Stage Filter (Only when matches tab is active) */}
           {activeTab === "matches" && (
             <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto self-end">
+              {/* Match Status Toggles */}
+              <div className="flex bg-black border border-emerald-500/10 p-1 rounded-lg w-full sm:w-auto overflow-x-auto shrink-0">
+                <button
+                  onClick={() => setFilterStatus("active")}
+                  className={`flex-1 sm:flex-none text-[9px] font-black uppercase tracking-wider py-2 px-3 rounded-md transition-all cursor-pointer whitespace-nowrap ${
+                    filterStatus === "active"
+                      ? "bg-emerald-600 text-white shadow-sm border border-emerald-500/30"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  Próximas / Ao Vivo
+                </button>
+                <button
+                  onClick={() => setFilterStatus("finished")}
+                  className={`flex-1 sm:flex-none text-[9px] font-black uppercase tracking-wider py-2 px-3 rounded-md transition-all cursor-pointer whitespace-nowrap ${
+                    filterStatus === "finished"
+                      ? "bg-emerald-600 text-white shadow-sm border border-emerald-500/30"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  Finalizadas
+                </button>
+                <button
+                  onClick={() => setFilterStatus("all")}
+                  className={`flex-1 sm:flex-none text-[9px] font-black uppercase tracking-wider py-2 px-3 rounded-md transition-all cursor-pointer whitespace-nowrap ${
+                    filterStatus === "all"
+                      ? "bg-emerald-600 text-white shadow-sm border border-emerald-500/30"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  Todas
+                </button>
+              </div>
+
               <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest font-mono whitespace-nowrap hidden sm:inline">
-                Filtrar Rodada:
+                Rodada:
               </span>
               <select
                 value={filterStage}
                 onChange={(e) => setFilterStage(e.target.value)}
                 className="grow sm:grow-0 text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-lg border border-emerald-500/15 bg-black text-white focus:outline-none focus:border-amber-500"
               >
-                <option value="all">Todas as Partidas</option>
+                <option value="all">Todas as Fases</option>
                 {uniqueStages.map((stage) => (
                   <option key={stage} value={stage}>
                     {stage}
@@ -511,7 +554,7 @@ export default function App() {
                 className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500 hover:text-black transition-all cursor-pointer text-[10px] font-black uppercase tracking-widest text-amber-400 disabled:opacity-40 select-none"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
-                {isSyncing ? "Sincronizando..." : "Sincronizar API"}
+                {isSyncing ? "Sincronizar" : "Sincronizar"}
               </button>
             </div>
           )}

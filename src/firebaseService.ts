@@ -373,14 +373,6 @@ export async function syncMatchesFromAPI(): Promise<{ success: boolean; updatedC
     // Isso garante que se a chamada à API falhar ou demorar, os placares reais simulados das partidas que já ocorreram sejam calculados perfeitamente
     const fallbackData: Record<string, { homeScore: number; awayScore: number; status: "scheduled" | "live" | "finished" }> = {
       "match_rsa_can": { homeScore: 0, awayScore: 1, status: "finished" }, // África do Sul 0 x 1 Canadá (Concluído)
-      "match_bra_jpn": { homeScore: 3, awayScore: 1, status: "finished" }, // Brasil 3 x 1 Japão (Concluído)
-      "match_ger_par": { homeScore: 2, awayScore: 0, status: "finished" }, // Alemanha 2 x 0 Paraguai (Concluído)
-      "match_ned_mar": { homeScore: 1, awayScore: 2, status: "finished" }, // Holanda 1 x 2 Marrocos (Concluído)
-      "match_civ_nor": { homeScore: 1, awayScore: 0, status: "finished" }, // Costa do Marfim 1 x 0 Noruega (Concluído)
-      "match_fra_swe": { homeScore: 2, awayScore: 1, status: "finished" }, // França 2 x 1 Suécia (Concluído)
-      "match_mex_ecu": { homeScore: 1, awayScore: 2, status: "finished" }, // México 1 x 2 Equador (Concluído)
-      "match_eng_cod": { homeScore: 3, awayScore: 0, status: "live" },     // Inglaterra 3 x 0 RD Congo (Ao Vivo)
-      "match_bel_sen": { homeScore: 0, awayScore: 0, status: "scheduled" },// Bélgica x Senegal (Agendado)
     };
 
     // Mesclar os dados recebidos da API com o nosso fallback robusto
