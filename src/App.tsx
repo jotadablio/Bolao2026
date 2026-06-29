@@ -11,7 +11,8 @@ import {
   leaveGroup,
   deleteGroup,
   subscribeUserGroups,
-  subscribeGroupMembers
+  subscribeGroupMembers,
+  syncMatchesFromAPI
 } from "./firebaseService";
 import { Match, Prediction, UserProfile, Group } from "./types";
 
@@ -23,7 +24,7 @@ import MatchAdminPanel from "./components/MatchAdminPanel";
 import NotificationCenter from "./components/NotificationCenter";
 import TriondaBallIcon from "./components/TriondaBallIcon";
 
-import { Trophy, LogOut, Swords, ListOrdered, HelpCircle, Users, Plus, ArrowLeft, Trash2, ShieldAlert } from "lucide-react";
+import { Trophy, LogOut, Swords, ListOrdered, HelpCircle, Users, Plus, ArrowLeft, Trash2, ShieldAlert, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function App() {
@@ -47,6 +48,26 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<"matches" | "leaderboard" | "groups">("matches");
   const [filterStage, setFilterStage] = useState<string>("all");
   const [darkMode, setDarkMode] = useState<boolean>(true);
+  
+  // API Sync state
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<string | null>(null);
+
+  const handleSyncScores = async () => {
+    setIsSyncing(true);
+    setSyncStatus("Sincronizando placares oficiais com a API...");
+    try {
+      const res = await syncMatchesFromAPI();
+      setSyncStatus(res.message);
+      setTimeout(() => setSyncStatus(null), 6000);
+    } catch (err) {
+      console.error(err);
+      setSyncStatus("Falha ao sincronizar com a API de placares.");
+      setTimeout(() => setSyncStatus(null), 6000);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   // Auth listener
   useEffect(() => {
@@ -117,6 +138,19 @@ export default function App() {
     });
     return () => unsub();
   }, [selectedGroupId]);
+
+  // Sincronização automática em segundo plano ao abrir o app
+  useEffect(() => {
+    if (user && isFirebaseConfigured) {
+      syncMatchesFromAPI()
+        .then((res) => {
+          console.log("Background auto-sync complete:", res.message);
+        })
+        .catch((err) => {
+          console.error("Background auto-sync failed:", err);
+        });
+    }
+  }, [user]);
 
   // Handle logout
   const handleLogOut = async () => {
@@ -454,7 +488,7 @@ export default function App() {
 
           {/* Stage Filter (Only when matches tab is active) */}
           {activeTab === "matches" && (
-            <div className="flex items-center gap-2.5 w-full sm:w-auto self-end">
+            <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto self-end">
               <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest font-mono whitespace-nowrap hidden sm:inline">
                 Filtrar Rodada:
               </span>
@@ -470,12 +504,35 @@ export default function App() {
                   </option>
                 ))}
               </select>
+
+              <button
+                onClick={handleSyncScores}
+                disabled={isSyncing}
+                className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500 hover:text-black transition-all cursor-pointer text-[10px] font-black uppercase tracking-widest text-amber-400 disabled:opacity-40 select-none"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
+                {isSyncing ? "Sincronizando..." : "Sincronizar API"}
+              </button>
             </div>
           )}
         </div>
 
         {/* Dynamic tab contents rendering */}
         <div className="flex flex-col gap-6">
+          
+          {/* Sync Status Banner */}
+          {syncStatus && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-wider font-mono flex items-center gap-3 shadow-lg"
+            >
+              <RefreshCw className={`w-4 h-4 shrink-0 text-amber-500 ${isSyncing ? "animate-spin" : ""}`} />
+              <span>{syncStatus}</span>
+            </motion.div>
+          )}
+
           <AnimatePresence mode="wait">
             
             {/* Matches tab */}

@@ -9,7 +9,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇨🇦",
     kickoffTime: new Date(2026, 5, 28, 16, 0).toISOString(), // 28 de Junho, 16:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_bra_jpn",
@@ -19,7 +19,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇯🇵",
     kickoffTime: new Date(2026, 5, 29, 14, 0).toISOString(), // 29 de Junho, 14:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_ger_par",
@@ -29,7 +29,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇵🇾",
     kickoffTime: new Date(2026, 5, 29, 17, 30).toISOString(), // 29 de Junho, 17:30
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_ned_mar",
@@ -39,7 +39,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇲🇦",
     kickoffTime: new Date(2026, 5, 29, 22, 0).toISOString(), // 29 de Junho, 22:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_civ_nor",
@@ -49,7 +49,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇳🇴",
     kickoffTime: new Date(2026, 5, 30, 14, 0).toISOString(), // 30 de Junho, 14:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_fra_swe",
@@ -59,7 +59,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇸🇪",
     kickoffTime: new Date(2026, 5, 30, 18, 0).toISOString(), // 30 de Junho, 18:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_mex_ecu",
@@ -69,7 +69,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇪🇨",
     kickoffTime: new Date(2026, 5, 30, 22, 0).toISOString(), // 30 de Junho, 22:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_eng_cod",
@@ -79,7 +79,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇨🇩",
     kickoffTime: new Date(2026, 6, 1, 13, 0).toISOString(), // 1 de Julho, 13:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_bel_sen",
@@ -89,7 +89,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇸🇳",
     kickoffTime: new Date(2026, 6, 1, 17, 0).toISOString(), // 1 de Julho, 17:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_usa_bih",
@@ -99,7 +99,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇧🇦",
     kickoffTime: new Date(2026, 6, 1, 21, 0).toISOString(), // 1 de Julho, 21:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_esp_aut",
@@ -109,7 +109,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇦🇹",
     kickoffTime: new Date(2026, 6, 2, 16, 0).toISOString(), // 2 de Julho, 16:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_por_cro",
@@ -119,7 +119,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇭🇷",
     kickoffTime: new Date(2026, 6, 2, 20, 0).toISOString(), // 2 de Julho, 20:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_sui_alg",
@@ -129,7 +129,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇩🇿",
     kickoffTime: new Date(2026, 6, 3, 0, 0).toISOString(), // 3 de Julho, 00:00 (Sexta-feira 0h)
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_aus_egy",
@@ -139,7 +139,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇪🇬",
     kickoffTime: new Date(2026, 6, 3, 15, 0).toISOString(), // 3 de Julho, 15:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_arg_cpv",
@@ -149,7 +149,7 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇨🇻",
     kickoffTime: new Date(2026, 6, 3, 19, 0).toISOString(), // 3 de Julho, 19:00
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   },
   {
     id: "match_col_gha",
@@ -159,6 +159,6 @@ export const INITIAL_MATCHES: Match[] = [
     awayFlag: "🇬🇭",
     kickoffTime: new Date(2026, 6, 3, 22, 30).toISOString(), // 3 de Julho, 22:30
     status: "scheduled",
-    stage: "Oitavas de Final"
+    stage: "16avos de Final"
   }
 ];
